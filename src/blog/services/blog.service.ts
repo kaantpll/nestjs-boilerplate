@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { BLOG_REPOSITORY } from 'src/shared/constants/constants';
+import { UserNotFound } from 'src/user/exceptions/userNotFound';
 import { UserService } from 'src/user/services/user.service';
 import { Repository } from 'typeorm';
 import { CreateBlogType } from '../../shared/types/CreateBlogType';
@@ -14,11 +15,13 @@ export class BlogService {
     private userService: UserService,
   ) {}
 
-  async getBlogList() {
+  async getBlogList(){
+
     return await this.blogRepository.find();
   }
   async createNewABlog(blogType: CreateBlogType) {
     const user = await this.userService.getUserWithId(blogType.userId);
+    if(!user) throw new UserNotFound('user not found')
 
     const blog = new Blog();
       (blog.user = user),
@@ -26,6 +29,7 @@ export class BlogService {
       (blog.content = blogType.content);
 
     const createdBlog = this.blogRepository.create(blog);
+
 
     await this.blogRepository.save(createdBlog);
   }

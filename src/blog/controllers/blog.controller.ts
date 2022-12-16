@@ -21,7 +21,7 @@ export class BlogController{
     @HttpCode(201)
     createNewBlog(@Body() blogDto:CreateBlogInputDto)
     {
-        this.blogService.createNewABlog(blogDto)
+       return this.blogService.createNewABlog(blogDto)
     }
 
     @Get(':id')
