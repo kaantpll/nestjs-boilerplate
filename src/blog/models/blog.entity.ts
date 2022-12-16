@@ -13,6 +13,9 @@ export class Blog{
     @Column()
     content:string
 
+    @Column()
+    userId:string
+    
     @ManyToOne(() => User, (user) => user.blogs,{onDelete:'SET NULL'})
     user: User
 

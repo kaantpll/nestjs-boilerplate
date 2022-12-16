@@ -1,6 +1,5 @@
 import { Module, Scope } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthModule } from './auth/modules/auth.module';
 import { BlogModule } from './blog/modules/blog.module';
@@ -14,7 +13,7 @@ import { UserModule } from './user/modules/user.module';
     ProfileModule,
     UserModule,
     BlogModule,
-    AuthModule
+    AuthModule,
   ],
   controllers: [],
   providers: [
