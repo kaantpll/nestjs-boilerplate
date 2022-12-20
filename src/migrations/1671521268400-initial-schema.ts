@@ -18,7 +18,7 @@ export class initialSchema1671521268400 implements MigrationInterface {
         columns: [
           {
             name: 'id',
-            type: 'increment',
+            type: 'auto',
             isPrimary: true,
             isGenerated: true,
             generationStrategy: 'increment',
@@ -59,7 +59,7 @@ export class initialSchema1671521268400 implements MigrationInterface {
         columns: [
           {
             name: 'id',
-            type: 'increment',
+            type: 'auto',
             isPrimary: true,
             isGenerated: true,
             generationStrategy: 'increment',
@@ -83,7 +83,7 @@ export class initialSchema1671521268400 implements MigrationInterface {
         columns: [
           {
             name: 'id',
-            type: 'increment',
+            type: 'auto',
             isPrimary: true,
             isGenerated: true,
             generationStrategy: 'increment',
@@ -106,7 +106,7 @@ export class initialSchema1671521268400 implements MigrationInterface {
       'blogs',
       new TableColumn({
         name: 'userId',
-        type: 'increment',
+        type: 'auto',
       }),
     );
 
@@ -121,10 +121,10 @@ export class initialSchema1671521268400 implements MigrationInterface {
     );
 
     // one to one: user has a profile
-    await queryRunner.query(`SELECT id
-    FROM profiles
-    LEFT JOIN users
-    ON profiles.id = users.id`);
+    // await queryRunner.query(`SELECT profiles.id, profiles.gender, profiles.photo
+    // FROM profiles
+    // LEFT JOIN users
+    // ON profiles.id = users.id;`);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
