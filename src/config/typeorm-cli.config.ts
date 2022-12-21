@@ -1,7 +1,9 @@
 import { DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
-import { initialSchema1671521268400 } from 'src/migrations/1671521268400-initial-schema';
+import { migr1671606198622 } from 'src/migrations/1671606198622-${MIGRATION_NAME}';
+
+
 
 config();
 
@@ -16,5 +18,5 @@ export default new DataSource({
   database: configService.get<string>('DATABASE_NAME'),
   logging: configService.get<boolean>('DATABASE_LOGGING'),
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-  migrations: [initialSchema1671521268400],
+  migrations: [migr1671606198622],
 });
