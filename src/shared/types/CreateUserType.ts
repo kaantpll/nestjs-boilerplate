@@ -1,3 +1,5 @@
+import { Role } from "src/user/models/role.enum"
+
 
 export type CreateUserType={
     username: string
@@ -5,4 +7,5 @@ export type CreateUserType={
     email:string
     gender:string
     photo:string
+    role:Role
 }

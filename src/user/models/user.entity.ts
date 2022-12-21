@@ -1,6 +1,7 @@
 import { Blog } from "src/blog/models/blog.entity";
 import { Profile } from "src/profile/models/profile.entity";
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn,OneToMany } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn,OneToMany, BeforeInsert } from "typeorm";
+import { Role } from "./role.enum";
 
 
 @Entity({name:'users'})
@@ -22,6 +23,9 @@ export class User{
 
     @Column()
     photo:string
+
+    @Column({default:'user'})
+    role: Role
 
     @OneToOne(() => Profile)
     @JoinColumn()

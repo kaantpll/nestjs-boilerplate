@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './shared/generalException';
 import { LoggingInterceptor } from './shared/logInterceptor';
@@ -8,6 +9,9 @@ import { LoggingInterceptor } from './shared/logInterceptor';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors();
+  app.use(helmet());
+  
   const config = new DocumentBuilder()
     .setTitle('User management')
     .setDescription(' API description')
