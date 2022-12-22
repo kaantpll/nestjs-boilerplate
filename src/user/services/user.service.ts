@@ -23,13 +23,11 @@ export class UserService {
   async createANewUser(userType: CreateUserType) {
     const profile = await this.profileService.createANewProfile(userType);
 
-    const hashPassword = await bcrypt.hash(userType.password,10)
-    
     const user = new User();
     user.username = userType.username;
     user.profile = profile;
     user.email = userType.email;
-    user.password = hashPassword;
+    user.password = userType.password;
     user.photo= userType.photo,
     user.gender = userType.gender
     user.role = userType.role

@@ -25,6 +25,7 @@ export class AuthService {
 
   async login(user: LoginUserType) {
     const findUser = await this.usersService.findOne(user.username);
+    console.log(findUser)
     const isMatch = await bcrypt.compare(user.password, findUser.password);
 
     if (!isMatch) throw new PasswordNotCorrect('Password isnt correct!');
