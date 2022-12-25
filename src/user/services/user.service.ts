@@ -5,8 +5,6 @@ import { Repository } from 'typeorm';
 import { CreateUserType } from '../../shared/types/CreateUserType';
 import { UserNotFound } from '../exceptions/userNotFound';
 import { User } from '../models/user.entity';
-import * as bcrypt from 'bcrypt';
-
 
 @Injectable()
 export class UserService {
@@ -22,15 +20,14 @@ export class UserService {
   }
   async createANewUser(userType: CreateUserType) {
     const profile = await this.profileService.createANewProfile(userType);
-
+ 
     const user = new User();
     user.username = userType.username;
     user.profile = profile;
     user.email = userType.email;
     user.password = userType.password;
-    user.photo= userType.photo,
-    user.gender = userType.gender
-    user.role = userType.role
+    (user.photo = userType.photo), (user.gender = userType.gender);
+    user.role = userType.role;
     user.blogs = [];
 
     const createdUser = this.userRepository.create(user);
@@ -38,9 +35,9 @@ export class UserService {
     return await this.userRepository.save(createdUser);
   }
 
-  async findOne(username:string){
-    const user =  await this.userRepository.findOneBy({username:username});
-    if(!user) throw new UserNotFound('user not found!')
+  async findOne(username: string) {
+    const user = await this.userRepository.findOneBy({ username: username });
+    if (!user) throw new UserNotFound('user not found!');
     return user;
   }
 

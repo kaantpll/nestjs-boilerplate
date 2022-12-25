@@ -34,6 +34,8 @@ export class BlogController{
 
     @Get(':id')
     @HttpCode(200)
+    @UseGuards(JwtAuthGuard,RoleGuard)
+    @Roles(Role.User,Role.Admin)
     getBlogById(@Param('id',ParseIntPipe) id :number){
        return this.blogService.getBlogWithId(id)
     }
