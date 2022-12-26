@@ -13,10 +13,12 @@ import {
 } from 'typeorm';
 import { Role } from './role.enum';
 import * as bcrypt from 'bcrypt';
-import { createCipheriv,createDecipheriv, randomBytes, scrypt } from 'crypto';
+import { createCipheriv, createDecipheriv } from 'crypto';
+import { config } from 'dotenv';
+config();
 
-const iv = randomBytes(16);
-const key = randomBytes(32);
+const iv = process.env.IV;
+const key = process.env.BKEY;
 
 @Entity({ name: 'users' })
 export class User {
@@ -59,22 +61,19 @@ export class User {
   @BeforeInsert()
   @BeforeUpdate()
   async encyptEmail() {
-
-    const cipher = createCipheriv('aes-256-ctr',key, iv);
+    const cipher = createCipheriv('aes-256-ctr', key, iv);
     let encrypted = cipher.update(this.email, 'utf8', 'hex');
     encrypted += cipher.final('hex');
-    console.log(encrypted.toString())
 
     this.email = encrypted.toString();
   }
 
   @AfterLoad()
-   deCryptedEmail() {
-    
+  deCryptedEmail() {
     const decipher = createDecipheriv('aes-256-ctr', key, iv);
     let decrypted = decipher.update(this.email, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
-  
-     this.email = decrypted.toString();
+
+    this.email = decrypted.toString();
   }
 }

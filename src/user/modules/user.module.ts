@@ -19,7 +19,7 @@ import { UserService } from '../services/user.service';
     ProfileModule,
   ],
 
-  providers: [...userProviders, UserService,UserResolver],
+  providers: [...userProviders, UserService, UserResolver],
   controllers: [UserController],
   exports: [UserService],
 })
