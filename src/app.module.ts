@@ -9,7 +9,7 @@ import { UserModule } from './user/modules/user.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     ProfileModule,
     UserModule,
     BlogModule,
@@ -19,7 +19,7 @@ import { UserModule } from './user/modules/user.module';
   providers: [
     {
       provide: APP_INTERCEPTOR,
-      scope:Scope.REQUEST,
+      scope: Scope.REQUEST,
       useClass: LoggingInterceptor,
     },
   ],

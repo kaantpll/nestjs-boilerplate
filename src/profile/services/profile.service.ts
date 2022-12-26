@@ -17,7 +17,6 @@ export class ProfileService {
   }
 
   getOneProfileWithId(id: number) {
-    console.log(this.profileRepository.findOneBy({ id }));
     return this.profileRepository.findOneBy({ id });
   }
 }

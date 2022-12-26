@@ -11,24 +11,24 @@ async function bootstrap() {
 
   app.enableCors();
   app.use(helmet());
-  
+
   const config = new DocumentBuilder()
     .setTitle('User management')
     .setDescription(' API description')
     .setVersion('1.0')
     .addTag('Users')
     .build();
-    
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
   app.useGlobalPipes(new ValidationPipe());
 
   app.useGlobalInterceptors(new LoggingInterceptor());
-  
-  const  httpAdapter  = app.get(HttpAdapterHost);
+
+  const httpAdapter = app.get(HttpAdapterHost);
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
-  
+
   await app.listen(3000);
 }
 bootstrap();
