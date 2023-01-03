@@ -24,7 +24,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
-  app.useGlobalInterceptors(new LoggingInterceptor());
+  // app.useGlobalInterceptors(new LoggingInterceptor());
 
   const httpAdapter = app.get(HttpAdapterHost);
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
