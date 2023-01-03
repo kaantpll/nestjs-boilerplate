@@ -21,8 +21,8 @@ import { redisStore } from 'cache-manager-redis-store';
       isGlobal: true,
       useFactory: async (config: ConfigService) => {
         const store = await redisStore({
-          url: 'redis://redis-16200.c55.eu-central-1-1.ec2.cloud.redislabs.com:16200',
-          password: 'y1abLpkKs6tmScQwVPzca4o231ZgfKfm',
+          url: process.env.redisUrl,
+          password: process.env.redisPassword,
         });
 
         return { store: store as unknown as CacheStore, ttl: 60 * 60 * 24 };
