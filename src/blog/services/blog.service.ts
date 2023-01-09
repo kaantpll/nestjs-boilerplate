@@ -23,7 +23,7 @@ export class BlogService {
   }
   async getBlogList() {
     //this.redisClient.hSet('key1', 'deger', 'degervalue');
-    if (this.redisClient.isReady) {
+    if (!this.redisClient.isReady) {
       const b = await this.redisClient.LRANGE('news:5', 0, 2);
       const c = await this.redisClient.GET('blogs');
       return JSON.parse(c);
@@ -35,6 +35,11 @@ export class BlogService {
       return await this.blogRepository.find();
     }
   }
+
+  async getBlogFromRedis() {
+    return await this.redisClient.GET('blogs');
+  }
+
   async createNewABlog(blogType: CreateBlogType) {
     const user = await this.userService.getUserWithId(blogType.userId);
     if (!user) throw new UserNotFound('user not found');
@@ -46,7 +51,8 @@ export class BlogService {
 
     const createdBlog = this.blogRepository.create(blog);
 
-    // await this.cacheManager.set('user-managment', createdBlog);
+    await this.redisClient.hSet('key1', 'deger1', 'deger2');
+    await this.redisClient.hSet('key1', 'deger2', 'deger3');
 
     await this.blogRepository.save(createdBlog);
   }

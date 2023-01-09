@@ -28,13 +28,18 @@ export class BlogController {
 
   @Get()
   @HttpCode(200)
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Roles(Role.User)
+  /* @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles(Role.User)*/
   /*
   @UseInterceptors(CacheInterceptor)
   @CacheKey('user-managment')*/
   async getBlogs() {
     return await this.blogService.getBlogList();
+  }
+
+  @Get('redis')
+  async getBlogRedis() {
+    return this.blogService.getBlogFromRedis();
   }
 
   @Post()
