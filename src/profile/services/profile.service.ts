@@ -1,8 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { PROFILE_REPOSITORY } from 'src/shared/constants/constants';
 import { Repository } from 'typeorm';
-import { ProfileInputType } from '../../shared/types/ProfileInputType';
-import { Profile } from '../models/profile.entity';
+import { Profile } from '../profile.entity';
+import { ProfileInputType } from 'src/shared/types/user';
 
 @Injectable()
 export class ProfileService {
@@ -16,7 +16,7 @@ export class ProfileService {
     return await this.profileRepository.save(profile);
   }
 
-  getOneProfileWithId(id: number) {
+  async getOneProfileWithId(id: number) {
     return this.profileRepository.findOneBy({ id });
   }
 }

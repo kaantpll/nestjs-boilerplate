@@ -1,11 +1,11 @@
 import { CacheModule, CacheStore, Module, Scope } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { AuthModule } from './auth/modules/auth.module';
-import { BlogModule } from './blog/modules/blog.module';
-import { ProfileModule } from './profile/modules/profile.module';
+import { AuthModule } from './auth/auth.module';
+import { BlogModule } from './blog/blog.module';
+import { ProfileModule } from './profile/profile.module';
 import { LoggingInterceptor } from './shared/logInterceptor';
-import { UserModule } from './user/modules/user.module';
+import { UserModule } from './user/user.module';
 import { redisStore } from 'cache-manager-redis-store';
 
 @Module({

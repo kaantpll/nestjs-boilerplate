@@ -16,11 +16,11 @@ import {
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { RoleGuard } from 'src/auth/guards/role.guard';
 import { Roles } from 'src/auth/role.decorator';
-import { Role } from 'src/user/models/role.enum';
+import { Role } from 'src/user/entities/role.enum';
 
-import { CreateBlogInputDto } from '../dtos/CreateBlogInputDto.dto';
-import { UpdateBlogInputDto } from '../dtos/UpdateBlogInputDto.dto';
-import { BlogService } from '../services/blog.service';
+import { CreateBlogInputDto } from './dtos/create';
+import { UpdateBlogInputDto } from './dtos/update';
+import { BlogService } from './services/blog.service';
 
 @Controller('api/v1/blogs')
 export class BlogController {
@@ -28,18 +28,8 @@ export class BlogController {
 
   @Get()
   @HttpCode(200)
-  /* @UseGuards(JwtAuthGuard, RoleGuard)
-  @Roles(Role.User)*/
-  /*
-  @UseInterceptors(CacheInterceptor)
-  @CacheKey('user-managment')*/
-  async getBlogs() {
+  async getList() {
     return await this.blogService.getBlogList();
-  }
-
-  @Get('redis')
-  async getBlogRedis() {
-    return this.blogService.getBlogFromRedis();
   }
 
   @Post()

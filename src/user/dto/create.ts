@@ -9,7 +9,7 @@ import {
   Min,
   MinLength,
 } from 'class-validator';
-import { Role } from '../models/role.enum';
+import { Role } from '../entities/role.enum';
 
 
 export class CreateUserDto {

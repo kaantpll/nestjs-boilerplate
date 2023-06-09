@@ -1,5 +1,5 @@
-import { Blog } from 'src/blog/models/blog.entity';
-import { Profile } from 'src/profile/models/profile.entity';
+import { Blog } from 'src/blog/blog.entity';
+import { Profile } from 'src/profile/profile.entity';
 import {
   Column,
   Entity,

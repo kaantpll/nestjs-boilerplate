@@ -1,6 +1,6 @@
 import { ObjectType,Field,ID } from "@nestjs/graphql";
 import JSON from 'graphql-type-json';
-import { Profile } from "src/profile/models/profile.entity";
+import { Profile } from "src/profile/profile.entity";
 import { BlogType } from "./BlogType";
 
 @ObjectType()

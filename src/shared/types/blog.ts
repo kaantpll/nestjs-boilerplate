@@ -3,3 +3,8 @@ export type CreateBlogType={
     content:string
     userId:number
 }
+
+export type UpdateBlogType={
+    title:string
+    content:string
+}

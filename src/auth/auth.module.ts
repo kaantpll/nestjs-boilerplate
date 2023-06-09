@@ -4,13 +4,13 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { jwtConstants } from 'src/shared/constants/constants';
-import { UserModule } from 'src/user/modules/user.module';
-import { AuthController } from '../controllers/auth.controller';
-import { RoleGuard } from '../guards/role.guard';
+import { UserModule } from 'src/user/user.module';
+import { AuthController } from './auth.controller';
+import { RoleGuard } from './guards/role.guard';
 
-import { JwtStrategy } from '../jwt.strategy';
-import { LocalStrategy } from '../local.strategy';
-import { AuthService } from '../services/auth.service';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { LocalStrategy } from './strategies/local.strategy';
+import { AuthService } from './auth.service';
 
 @Module({
   imports: [

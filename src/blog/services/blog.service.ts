@@ -1,12 +1,11 @@
-import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { BLOG_REPOSITORY } from 'src/shared/constants/constants';
 import { UserNotFound } from 'src/user/exceptions/userNotFound';
 import { UserService } from 'src/user/services/user.service';
 import { Repository } from 'typeorm';
-import { CreateBlogType } from '../../shared/types/CreateBlogType';
+import { CreateBlogType } from '../../shared/types/create-blog-type';
 import { UpdateBlogType } from '../../shared/types/UpdateBlogType';
-import { BlogNotFound } from '../exceptions/blogNotFound';
-import { Blog } from '../models/blog.entity';
+import { Blog } from '../blog.entity';
 import { RedisClientType } from 'redis';
 import { RedisCache } from 'src/config/redis.interface';
 
@@ -21,23 +20,8 @@ export class BlogService {
   ) {
     this.redisClient = this.cacheManager.store.getClient();
   }
-  async getBlogList() {
-    //this.redisClient.hSet('key1', 'deger', 'degervalue');
-    if (!this.redisClient.isReady) {
-      const b = await this.redisClient.LRANGE('news:5', 0, 2);
-      const c = await this.redisClient.GET('blogs');
-      return JSON.parse(c);
-      //console.log(b);
-      const a = await this.redisClient.HGETALL('news:99');
-      //console.log(a.veri);
-      // console.log(a);
-    } else {
-      return await this.blogRepository.find();
-    }
-  }
-
-  async getBlogFromRedis() {
-    return await this.redisClient.GET('blogs');
+  async getList() {
+    return await this.blogRepository.find();
   }
 
   async createNewABlog(blogType: CreateBlogType) {
@@ -59,7 +43,7 @@ export class BlogService {
 
   async getBlogWithId(id: number) {
     const blog = await this.blogRepository.findOneBy({ id });
-    if (!blog) throw new BlogNotFound('Blog is not exist!');
+    if (!blog) throw new NotFoundException('Blog is not exist!');
     return blog;
   }
 
@@ -69,7 +53,7 @@ export class BlogService {
 
   async updateBlog(id: number, blogType: UpdateBlogType) {
     const updateBlog = await this.blogRepository.update(id, { ...blogType });
-    if (!updateBlog) throw new BlogNotFound('Blog is not exist!');
+    if (!updateBlog) throw new NotFoundException('Blog is not exist!');
     return updateBlog.raw;
   }
 }

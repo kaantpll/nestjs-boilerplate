@@ -1,11 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { CreateUserType } from 'src/shared/types/CreateUserType';
-import { LoginUserType } from 'src/shared/types/LoginUserType';
+import { CreateUserType } from 'src/shared/types/create-user-type';
+import { LoginUserType } from 'src/shared/types/login-user-type';
 import { UserService } from 'src/user/services/user.service';
-import { UserAlreadyExist } from '../exceptions/UserAlreadyExist';
 import * as bcrypt from 'bcrypt';
-import { PasswordNotCorrect } from '../exceptions/PasswordNotCorrect';
+
 
 @Injectable()
 export class AuthService {
@@ -27,7 +26,7 @@ export class AuthService {
     const findUser = await this.usersService.findOne(user.username);
     const isMatch = await bcrypt.compare(user.password, findUser.password);
 
-    if (!isMatch) throw new PasswordNotCorrect('Password isnt correct!');
+    if (!isMatch) throw new BadRequestException('Password isnt correct!');
 
     const payload = {
       username: findUser.username,

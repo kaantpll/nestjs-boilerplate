@@ -1,10 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ProfileService } from 'src/profile/services/profile.service';
 import { USER_REPOSITORY } from 'src/shared/constants/constants';
 import { Repository } from 'typeorm';
-import { CreateUserType } from '../../shared/types/CreateUserType';
-import { UserNotFound } from '../exceptions/userNotFound';
-import { User } from '../models/user.entity';
+import { User } from '../entities/user.entity';
+import { CreateUserType } from 'src/shared/types/user';
 
 @Injectable()
 export class UserService {
@@ -37,7 +36,7 @@ export class UserService {
 
   async findOne(username: string) {
     const user = await this.userRepository.findOneBy({ username: username });
-    if (!user) throw new UserNotFound('user not found!');
+    if (!user) throw new NotFoundException('user not found!');
     return user;
   }
 
@@ -47,6 +46,6 @@ export class UserService {
 
   async deleteUserWithId(id: number) {
     const deletedUser = await this.userRepository.delete(id);
-    if (!deletedUser) throw new UserNotFound('User not found!');
+    if (!deletedUser) throw new NotFoundException('User not found!');
   }
 }
