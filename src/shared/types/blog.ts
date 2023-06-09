@@ -1,10 +1,6 @@
-export type CreateBlogType={
-    title:string
-    content:string
-    userId:number
-}
+export type CreateBlogType = {
+  title: string;
+  content: string;
+};
 
-export type UpdateBlogType={
-    title:string
-    content:string
-}
+export type UpdateBlogType = CreateBlogType;

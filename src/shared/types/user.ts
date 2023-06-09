@@ -9,13 +9,7 @@ export type CreateUserType = {
   role: Role;
 };
 
-export type RegisterUserType = {
-  username: string;
-  password: string;
-  email: string;
-  gender: string;
-  photo: string;
-};
+export type RegisterUserType = Omit<CreateUserType, 'role'>;
 
 export type ProfileInputType = {
   gender: string;
@@ -29,5 +23,4 @@ export type LoginUserType = {
 
 export type JwtTokenType = {
   id: number;
-
 };
