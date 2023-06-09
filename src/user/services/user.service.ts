@@ -19,30 +19,30 @@ export class UserService {
     });
   }
   async create(data: CreateUserType) {
-    const {username,password,gender,photo,email,role} = data
-    const profile = await this.profileService.createANewProfile(data);
- 
+    const { username, password, gender, photo, email, role } = data;
+    const profile = await this.profileService.create(data);
+
     let user = new User();
 
-    const hashedPassword = await this.hashPassword(password)
+    const hashedPassword = await this.hashPassword(password);
 
     user = {
       ...user,
       username,
-      password : hashedPassword,
+      password: hashedPassword,
       profile,
       gender,
       photo,
       email,
-      role
-    }
+      role,
+    };
 
     await this.userRepository.insert(user);
 
     return user;
   }
 
-  async hashPassword(password:string) {
+  async hashPassword(password: string) {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
     password = hash;
@@ -51,21 +51,24 @@ export class UserService {
   }
 
   async getOneByUsername(username: string) {
-    const user = await this.userRepository.findOneBy({ username: username });
-    if (!user) throw new NotFoundException('user not found!');
+    const user = await this.userRepository.findOneBy({ username });
+
+    if (!user) throw new NotFoundException(USER.NOT_FOUND);
+
     return user;
   }
 
   async getById(id: number) {
-    const user =  this.userRepository.findOneBy({ id });
+    const user = this.userRepository.findOneBy({ id });
 
-    if(!user){
-      throw new NotFoundException()
-    }
+    if (!user) throw new NotFoundException(USER.NOT_FOUND);
+
+    return user;
   }
 
   async delete(id: number) {
     const deletedUser = await this.userRepository.delete(id);
-    if (!deletedUser.affected) throw new NotFoundException('User not found!');
+
+    if (!deletedUser.affected) throw new NotFoundException(USER.NOT_FOUND);
   }
 }

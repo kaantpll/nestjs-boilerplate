@@ -1,10 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { CreateUserType } from 'src/shared/types/create-user-type';
-import { LoginUserType } from 'src/shared/types/login-user-type';
 import { UserService } from 'src/user/services/user.service';
 import * as bcrypt from 'bcrypt';
-
+import {
+  CreateUserType,
+  JwtTokenType,
+  LoginUserType,
+} from 'src/shared/types/user';
 
 @Injectable()
 export class AuthService {
@@ -13,8 +15,8 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, pass: string): Promise<any> {
-    const user = await this.usersService.findOne(username);
+  async validateUser(username: string, pass: string) {
+    const user = await this.usersService.getOneByUsername(username);
     if (user && user.password === pass) {
       const { password, ...result } = user;
       return result;
@@ -22,16 +24,18 @@ export class AuthService {
     return null;
   }
 
-  async login(user: LoginUserType) {
-    const findUser = await this.usersService.findOne(user.username);
-    const isMatch = await bcrypt.compare(user.password, findUser.password);
+  async login(data: LoginUserType) {
+    const { username, password } = data;
+
+    const foundedUser = await this.usersService.getOneByUsername(username);
+    const isMatch = await bcrypt.compare(password, foundedUser.password);
 
     if (!isMatch) throw new BadRequestException('Password isnt correct!');
 
     const payload = {
-      username: findUser.username,
-      id: findUser.id,
-      role: findUser.role,
+      username,
+      id: foundedUser.id,
+      role: foundedUser.role,
     };
 
     return {
@@ -39,8 +43,8 @@ export class AuthService {
     };
   }
 
-  async register(registerUser: CreateUserType) {
-    const newUser = await this.usersService.createANewUser(registerUser);
+  async register(data: CreateUserType) {
+    const newUser = await this.usersService.create(data);
 
     const payload = {
       username: newUser.username,
@@ -51,5 +55,11 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  decodejwt(accessToken: string) {
+    const decoded = this.jwtService.decode(accessToken) as JwtTokenType;
+
+    return decoded.id;
   }
 }

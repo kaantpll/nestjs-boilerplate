@@ -1,59 +1,66 @@
-import { CACHE_MANAGER, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  CACHE_MANAGER,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { BLOG_REPOSITORY } from 'src/shared/constants/constants';
-import { UserNotFound } from 'src/user/exceptions/userNotFound';
 import { UserService } from 'src/user/services/user.service';
 import { Repository } from 'typeorm';
-import { CreateBlogType } from '../../shared/types/create-blog-type';
-import { UpdateBlogType } from '../../shared/types/UpdateBlogType';
 import { Blog } from '../blog.entity';
-import { RedisClientType } from 'redis';
-import { RedisCache } from 'src/config/redis.interface';
+import { CreateBlogType, UpdateBlogType } from 'src/shared/types/blog';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class BlogService {
-  private redisClient: RedisClientType;
-
   constructor(
     @Inject(BLOG_REPOSITORY) private blogRepository: Repository<Blog>,
-    @Inject(CACHE_MANAGER) private cacheManager: RedisCache,
+    private authService: AuthService,
     private userService: UserService,
-  ) {
-    this.redisClient = this.cacheManager.store.getClient();
-  }
+  ) {}
+
   async getList() {
     return await this.blogRepository.find();
   }
 
-  async createNewABlog(blogType: CreateBlogType) {
-    const user = await this.userService.getUserWithId(blogType.userId);
-    if (!user) throw new UserNotFound('user not found');
+  async create(data: CreateBlogType, accessToken: string) {
+    const { content, title } = data;
 
-    const blog = new Blog();
-    (blog.user = user),
-      (blog.title = blogType.title),
-      (blog.content = blogType.content);
+    const userId = this.authService.decodejwt(accessToken);
 
-    const createdBlog = this.blogRepository.create(blog);
+    const user = await this.userService.getById(userId);
 
-    await this.redisClient.hSet('key1', 'deger1', 'deger2');
-    await this.redisClient.hSet('key1', 'deger2', 'deger3');
+    let blog = new Blog();
 
-    await this.blogRepository.save(createdBlog);
-  }
+    blog = {
+      ...blog,
+      content,
+      title,
+      user,
+    };
 
-  async getBlogWithId(id: number) {
-    const blog = await this.blogRepository.findOneBy({ id });
-    if (!blog) throw new NotFoundException('Blog is not exist!');
+    await this.blogRepository.insert(blog);
+
     return blog;
   }
 
-  async deleteById(id: number) {
-    await this.blogRepository.delete({ id });
+  async getById(id: number) {
+    const blog = await this.blogRepository.findOneBy({ id });
+
+    if (!blog) throw new NotFoundException(BLOG.NOT_FOUND);
+
+    return blog;
   }
 
-  async updateBlog(id: number, blogType: UpdateBlogType) {
-    const updateBlog = await this.blogRepository.update(id, { ...blogType });
-    if (!updateBlog) throw new NotFoundException('Blog is not exist!');
-    return updateBlog.raw;
+  async delete(id: number) {
+    const deleted = await this.blogRepository.delete({ id });
+
+    if (!deleted.affected) throw new NotFoundException(BLOG.NOT_FOUND);
+  }
+
+  async update(id: number, data: UpdateBlogType) {
+    const updateBlog = await this.blogRepository.update(id, data);
+
+    if (!updateBlog.affected) throw new NotFoundException(BLOG.NOT_FOUND);
   }
 }

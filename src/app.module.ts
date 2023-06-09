@@ -15,19 +15,6 @@ import { redisStore } from 'cache-manager-redis-store';
     UserModule,
     BlogModule,
     AuthModule,
-    CacheModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      isGlobal: true,
-      useFactory: async (config: ConfigService) => {
-        const store = await redisStore({
-          url: process.env.redisUrl,
-          password: process.env.redisPassword,
-        });
-
-        return { store: store as unknown as CacheStore, ttl: 60 * 60 * 24 };
-      },
-    }),
   ],
   controllers: [],
   providers: [

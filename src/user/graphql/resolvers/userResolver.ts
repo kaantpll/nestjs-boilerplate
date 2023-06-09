@@ -7,15 +7,13 @@ import { UserType } from '../types/user-type';
 export class UserResolver {
   constructor(private userService: UserService) {}
 
-  @Query(returns => [UserType])
-   async getAllList() {
-    return  this.userService.getList();
+  @Query(() => [UserType])
+  async getAllList() {
+    return this.userService.getList();
   }
 
-  @Query((returns)=>UserType)
-  findByUser(
-    @Args('username') username:string
-  ){
-    return this.userService.getOneByUsername(username)
+  @Query(() => UserType)
+  findByUser(@Args('username') username: string) {
+    return this.userService.getOneByUsername(username);
   }
 }

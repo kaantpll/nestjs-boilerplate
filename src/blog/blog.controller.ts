@@ -10,6 +10,7 @@ import {
   Delete,
   UseInterceptors,
   UseGuards,
+  Headers,
   CacheInterceptor,
   CacheKey,
 } from '@nestjs/common';
@@ -22,6 +23,8 @@ import { CreateBlogInputDto } from './dtos/create';
 import { UpdateBlogInputDto } from './dtos/update';
 import { BlogService } from './services/blog.service';
 
+@UseGuards(JwtAuthGuard, RoleGuard)
+@Roles(Role.User, Role.Admin)
 @Controller('api/v1/blogs')
 export class BlogController {
   constructor(private blogService: BlogService) {}
@@ -29,35 +32,33 @@ export class BlogController {
   @Get()
   @HttpCode(200)
   async getList() {
-    return await this.blogService.getBlogList();
+    return await this.blogService.getList();
   }
 
   @Post()
   @HttpCode(201)
-  createNewBlog(@Body() blogDto: CreateBlogInputDto) {
-    return this.blogService.createNewABlog(blogDto);
+  async create(@Body() blogDto: CreateBlogInputDto, @Headers() headers) {
+    return await this.blogService.create(blogDto, headers.authorization);
   }
 
   @Get(':id')
   @HttpCode(200)
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Roles(Role.User, Role.Admin)
-  getBlogById(@Param('id', ParseIntPipe) id: number) {
-    return this.blogService.getBlogWithId(id);
+  async getById(@Param('id', ParseIntPipe) id: number) {
+    return await this.blogService.getById(id);
   }
 
   @Put(':id')
-  @HttpCode(200)
-  updateBlogWithId(
+  @HttpCode(204)
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateBlogDto: UpdateBlogInputDto,
   ) {
-    return this.blogService.updateBlog(id, updateBlogDto);
+    await this.blogService.update(id, updateBlogDto);
   }
 
-  @Delete('id')
-  @HttpCode(200)
-  deleteBlogById(@Param('id', ParseIntPipe) id: number) {
-    this.blogService.deleteById(id);
+  @Delete(':id')
+  @HttpCode(204)
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    await this.blogService.delete(id);
   }
 }
