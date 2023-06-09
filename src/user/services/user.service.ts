@@ -1,10 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ProfileService } from 'src/profile/services/profile.service';
 import { USER_REPOSITORY } from 'src/shared/constants/constants';
 import { Repository } from 'typeorm';
-import { CreateUserType } from '../../shared/types/CreateUserType';
-import { UserNotFound } from '../exceptions/userNotFound';
-import { User } from '../models/user.entity';
+import { User } from '../entities/user.entity';
+import { CreateUserType } from 'src/shared/types/user';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -13,40 +13,62 @@ export class UserService {
     private profileService: ProfileService,
   ) {}
 
-  async getUserList() {
+  async getList() {
     return await this.userRepository.find({
       relations: { profile: true, blogs: true },
     });
   }
-  async createANewUser(userType: CreateUserType) {
-    const profile = await this.profileService.createANewProfile(userType);
- 
-    const user = new User();
-    user.username = userType.username;
-    user.profile = profile;
-    user.email = userType.email;
-    user.password = userType.password;
-    (user.photo = userType.photo), (user.gender = userType.gender);
-    user.role = userType.role;
-    user.blogs = [];
+  async create(data: CreateUserType) {
+    const { username, password, gender, photo, email, role } = data;
+    const profile = await this.profileService.create(data);
 
-    const createdUser = this.userRepository.create(user);
+    let user = new User();
 
-    return await this.userRepository.save(createdUser);
-  }
+    const hashedPassword = await this.hashPassword(password);
 
-  async findOne(username: string) {
-    const user = await this.userRepository.findOneBy({ username: username });
-    if (!user) throw new UserNotFound('user not found!');
+    user = {
+      ...user,
+      username,
+      password: hashedPassword,
+      profile,
+      gender,
+      photo,
+      email,
+      role,
+    };
+
+    await this.userRepository.insert(user);
+
     return user;
   }
 
-  async getUserWithId(id: number) {
-    return await this.userRepository.findOneBy({ id });
+  async hashPassword(password: string) {
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt);
+    password = hash;
+
+    return password;
   }
 
-  async deleteUserWithId(id: number) {
+  async getOneByUsername(username: string) {
+    const user = await this.userRepository.findOneBy({ username });
+
+    if (!user) throw new NotFoundException(USER.NOT_FOUND);
+
+    return user;
+  }
+
+  async getById(id: number) {
+    const user = this.userRepository.findOneBy({ id });
+
+    if (!user) throw new NotFoundException(USER.NOT_FOUND);
+
+    return user;
+  }
+
+  async delete(id: number) {
     const deletedUser = await this.userRepository.delete(id);
-    if (!deletedUser) throw new UserNotFound('User not found!');
+
+    if (!deletedUser.affected) throw new NotFoundException(USER.NOT_FOUND);
   }
 }

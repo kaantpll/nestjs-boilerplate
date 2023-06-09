@@ -1,6 +1,6 @@
 import { PROFILE_REPOSITORY } from 'src/shared/constants/constants';
 import { DataSource } from 'typeorm';
-import { Profile } from '../models/profile.entity';
+import { Profile } from '../profile.entity';
 
 
 export const profileProviders = [

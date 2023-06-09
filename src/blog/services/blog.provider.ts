@@ -1,6 +1,6 @@
 import { BLOG_REPOSITORY } from "src/shared/constants/constants";
 import { DataSource } from "typeorm";
-import { Blog } from "../models/blog.entity";
+import { Blog } from "../blog.entity";
 
 export const blogProviders = [
     {
