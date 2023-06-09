@@ -1,7 +1,7 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UserService } from 'src/user/services/user.service';
-import { BlogType } from '../types/BlogType';
-import { UserType } from '../types/UserType';
+import { BlogType } from '../types/blog-type';
+import { UserType } from '../types/user-type';
 
 @Resolver((of: any) => UserType)
 export class UserResolver {
@@ -9,13 +9,13 @@ export class UserResolver {
 
   @Query(returns => [UserType])
    async getAllList() {
-    return  this.userService.getUserList();
+    return  this.userService.getList();
   }
 
   @Query((returns)=>UserType)
   findByUser(
     @Args('username') username:string
   ){
-    return this.userService.findOne(username)
+    return this.userService.getOneByUsername(username)
   }
 }

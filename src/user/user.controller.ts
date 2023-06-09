@@ -1,4 +1,4 @@
-import { Controller ,Get,Body,Post} from "@nestjs/common";
+import { Controller ,Get,Body,Post, HttpCode, Delete, Param, ParseIntPipe} from "@nestjs/common";
 import { CreateUserDto } from "./dto/create";
 
 import { UserService } from "./services/user.service";
@@ -6,17 +6,30 @@ import { UserService } from "./services/user.service";
 
 @Controller('api/v1/users')
 export class UserController{
-
     constructor(private userService:UserService){}
 
    @Get()
-   async getUsers(){
-        return this.userService.getUserList();
+   @HttpCode(200)
+   async getList(){
+        return await this.userService.getList();
     }
 
+    @Get(':id')
+    @HttpCode(200)
+    async getOne(@Param('id', ParseIntPipe) id: number){
+        return await this.userService.getById(id);
+    }
+    
     @Post()
-    async createUser(@Body() userDto:CreateUserDto){
-        return this.userService.createANewUser(userDto)
+    @HttpCode(201)
+    async create(@Body() userDto:CreateUserDto){
+        return await this.userService.create(userDto)
+    }
+
+    @Delete(':id')
+    @HttpCode(204)
+    async delete(@Param('id', ParseIntPipe) id: number){
+        await this.userService.delete(id)
     }
 
 }

@@ -1,7 +1,7 @@
 import { ObjectType,Field,ID } from "@nestjs/graphql";
 import JSON from 'graphql-type-json';
 import { Profile } from "src/profile/profile.entity";
-import { BlogType } from "./BlogType";
+import { BlogType } from "./blog-type";
 
 @ObjectType()
 export class UserType {

@@ -4,6 +4,7 @@ import { USER_REPOSITORY } from 'src/shared/constants/constants';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { CreateUserType } from 'src/shared/types/user';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -12,40 +13,59 @@ export class UserService {
     private profileService: ProfileService,
   ) {}
 
-  async getUserList() {
+  async getList() {
     return await this.userRepository.find({
       relations: { profile: true, blogs: true },
     });
   }
-  async createANewUser(userType: CreateUserType) {
-    const profile = await this.profileService.createANewProfile(userType);
+  async create(data: CreateUserType) {
+    const {username,password,gender,photo,email,role} = data
+    const profile = await this.profileService.createANewProfile(data);
  
-    const user = new User();
-    user.username = userType.username;
-    user.profile = profile;
-    user.email = userType.email;
-    user.password = userType.password;
-    (user.photo = userType.photo), (user.gender = userType.gender);
-    user.role = userType.role;
-    user.blogs = [];
+    let user = new User();
 
-    const createdUser = this.userRepository.create(user);
+    const hashedPassword = await this.hashPassword(password)
 
-    return await this.userRepository.save(createdUser);
+    user = {
+      ...user,
+      username,
+      password : hashedPassword,
+      profile,
+      gender,
+      photo,
+      email,
+      role
+    }
+
+    await this.userRepository.insert(user);
+
+    return user;
   }
 
-  async findOne(username: string) {
+  async hashPassword(password:string) {
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt);
+    password = hash;
+
+    return password;
+  }
+
+  async getOneByUsername(username: string) {
     const user = await this.userRepository.findOneBy({ username: username });
     if (!user) throw new NotFoundException('user not found!');
     return user;
   }
 
-  async getUserWithId(id: number) {
-    return await this.userRepository.findOneBy({ id });
+  async getById(id: number) {
+    const user =  this.userRepository.findOneBy({ id });
+
+    if(!user){
+      throw new NotFoundException()
+    }
   }
 
-  async deleteUserWithId(id: number) {
+  async delete(id: number) {
     const deletedUser = await this.userRepository.delete(id);
-    if (!deletedUser) throw new NotFoundException('User not found!');
+    if (!deletedUser.affected) throw new NotFoundException('User not found!');
   }
 }
