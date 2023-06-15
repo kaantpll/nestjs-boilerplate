@@ -10,7 +10,7 @@ import {
 import { ParseIntPipe } from '@nestjs/common/pipes';
 import { LocalAuthGuard } from 'src/auth/guards/localAuth.guard';
 import { CreateProfileInputDto } from './dto/create';
-import { ProfileService } from './services/profile.service';
+import { ProfileService } from './profile.service';
 
 @Controller('api/v1/profiles')
 export class ProfileController {

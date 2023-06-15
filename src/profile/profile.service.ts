@@ -1,13 +1,13 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
-import { PROFILE_REPOSITORY } from 'src/shared/constants/constants';
 import { Repository } from 'typeorm';
-import { Profile } from '../profile.entity';
-import { ProfileInputType } from 'src/shared/types/user';
+import { Profile } from './profile.entity';
+import { ProfileInputType } from '../shared/types/user';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ProfileService {
   constructor(
-    @Inject(PROFILE_REPOSITORY)
+    @InjectRepository(Profile)
     private profileRepository: Repository<Profile>,
   ) {}
 

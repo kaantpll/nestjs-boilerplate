@@ -4,17 +4,18 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { BLOG_REPOSITORY } from 'src/shared/constants/constants';
-import { UserService } from 'src/user/services/user.service';
+import { BLOG_REPOSITORY } from 'src/shared/constants/general';
 import { Repository } from 'typeorm';
-import { Blog } from '../blog.entity';
+import { Blog } from './blog.entity';
 import { CreateBlogType, UpdateBlogType } from 'src/shared/types/blog';
 import { AuthService } from 'src/auth/auth.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class BlogService {
   constructor(
-    @Inject(BLOG_REPOSITORY) private blogRepository: Repository<Blog>,
+    @InjectRepository(Blog) private blogRepository: Repository<Blog>,
     private authService: AuthService,
     private userService: UserService,
   ) {}

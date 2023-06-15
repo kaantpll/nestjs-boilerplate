@@ -21,10 +21,10 @@ import { Role } from 'src/user/entities/role.enum';
 
 import { CreateBlogInputDto } from './dtos/create';
 import { UpdateBlogInputDto } from './dtos/update';
-import { BlogService } from './services/blog.service';
-
+import { BlogService } from './blog.service';
+/*
 @UseGuards(JwtAuthGuard, RoleGuard)
-@Roles(Role.User, Role.Admin)
+@Roles(Role.User, Role.Admin)*/
 @Controller('api/v1/blogs')
 export class BlogController {
   constructor(private blogService: BlogService) {}

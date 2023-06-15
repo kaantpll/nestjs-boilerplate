@@ -1,15 +1,15 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { ProfileService } from 'src/profile/services/profile.service';
-import { USER_REPOSITORY } from 'src/shared/constants/constants';
 import { Repository } from 'typeorm';
-import { User } from '../entities/user.entity';
 import { CreateUserType } from 'src/shared/types/user';
 import * as bcrypt from 'bcrypt';
+import { User } from './entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ProfileService } from 'src/profile/profile.service';
 
 @Injectable()
 export class UserService {
   constructor(
-    @Inject(USER_REPOSITORY) private userRepository: Repository<User>,
+    @InjectRepository(User) private userRepository: Repository<User>,
     private profileService: ProfileService,
   ) {}
 
