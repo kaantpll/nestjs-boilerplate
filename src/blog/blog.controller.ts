@@ -19,12 +19,12 @@ import { RoleGuard } from 'src/auth/guards/role.guard';
 import { Roles } from 'src/auth/role.decorator';
 import { Role } from 'src/user/entities/role.enum';
 
-import { CreateBlogInputDto } from './dtos/create';
-import { UpdateBlogInputDto } from './dtos/update';
-import { BlogService } from './services/blog.service';
-
+import { BlogService } from './blog.service';
+import { CreateBlogInputDto } from './dto/create';
+import { UpdateBlogInputDto } from './dto/update';
+/*
 @UseGuards(JwtAuthGuard, RoleGuard)
-@Roles(Role.User, Role.Admin)
+@Roles(Role.User, Role.Admin)*/
 @Controller('api/v1/blogs')
 export class BlogController {
   constructor(private blogService: BlogService) {}
