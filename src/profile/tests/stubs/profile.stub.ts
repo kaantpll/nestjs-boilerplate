@@ -7,3 +7,11 @@ export const profileStub = (): Profile => {
     photo: '/path',
   };
 };
+
+export const profileInvalid = (): Profile => {
+  return {
+    id: -1,
+    gender: null,
+    photo: null,
+  };
+};

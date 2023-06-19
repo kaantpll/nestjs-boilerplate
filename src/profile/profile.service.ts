@@ -11,6 +11,20 @@ export class ProfileService {
     private profileRepository: Repository<Profile>,
   ) {}
 
+  async getList() {
+    return await this.profileRepository.find();
+  }
+
+  async getOne(id: number) {
+    const profile = await this.profileRepository.findOneBy({ id });
+
+    if (!profile) {
+      throw new NotFoundException(PROFILE.NOT_FOUND);
+    }
+
+    return profile;
+  }
+
   async create(data: ProfileInputType) {
     const { gender, photo } = data;
 
@@ -27,13 +41,28 @@ export class ProfileService {
     return profile;
   }
 
-  async getOne(id: number) {
-    const profile = await this.profileRepository.findOneBy({ id });
+  async update(id: number, data: UpdateProfileType) {
+    const updated = await this.profileRepository.update(id, data);
 
-    if (!profile) {
+    if (!updated.affected) {
       throw new NotFoundException(PROFILE.NOT_FOUND);
     }
 
-    return profile;
+    return true;
+  }
+
+  async delete(id: number) {
+    const deleted = await this.profileRepository.delete(id);
+
+    if (!deleted.affected) {
+      throw new NotFoundException(PROFILE.NOT_FOUND);
+    }
+
+    return true;
   }
 }
+
+export type UpdateProfileType = {
+  photo: string;
+  gender: string;
+};
